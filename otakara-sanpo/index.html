@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お宝さんぽ - トレジャーハントウォーキング</title>
+    <meta name="description" content="毎日、封印された瓶に宝の地図が流れ着く。読み解いて歩けば、宝が手に入り図鑑に集まる。お宝さんぽは、散歩を楽しく続けるためのご褒美アプリです。">
+    <meta property="og:title" content="お宝さんぽ - トレジャーハントウォーキング">
+    <meta property="og:description" content="歩くたび、宝の地図が届く。読み解いて歩いて、宝を図鑑に集めよう。">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #111118;
+            --bg-card: #16161f;
+            --bg-card-hover: #1c1c28;
+            --gold-primary: #c8a44e;
+            --gold-light: #e8d08c;
+            --gold-dark: #9a7b2f;
+            --gold-glow: rgba(200, 164, 78, 0.15);
+            --text-primary: #f0ece4;
+            --text-secondary: #9a978f;
+            --text-muted: #5e5c56;
+            --border-subtle: rgba(200, 164, 78, 0.12);
+            --border-card: rgba(200, 164, 78, 0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+        }
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 20px 40px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            transition: all 0.3s ease;
+        }
+        .nav-logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 22px; color: var(--gold-primary);
+            text-decoration: none; letter-spacing: 1px;
+        }
+        .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+        .nav-links a {
+            color: var(--text-secondary); text-decoration: none;
+            font-size: 14px; font-weight: 400; letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--gold-light); }
+        .nav-links .lang { border: 1px solid var(--border-subtle); border-radius: 100px; padding: 4px 14px; }
+
+        .hero {
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            position: relative; padding: 120px 40px 80px; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -30%; left: 50%;
+            transform: translateX(-50%); width: 800px; height: 800px;
+            background: radial-gradient(ellipse, var(--gold-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero::after {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 200px;
+            background: linear-gradient(to top, var(--bg-primary), transparent);
+            pointer-events: none;
+        }
+        .hero-content { text-align: center; max-width: 720px; position: relative; z-index: 1; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 20px; border: 1px solid var(--border-subtle);
+            border-radius: 100px; font-size: 13px; color: var(--gold-primary);
+            letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 40px;
+            background: rgba(200, 164, 78, 0.04);
+            animation: fadeInDown 0.8s ease both;
+        }
+        .hero-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(42px, 7vw, 80px); font-weight: 400;
+            line-height: 1.1; letter-spacing: -1px; margin-bottom: 8px;
+            animation: fadeInUp 0.8s ease 0.15s both;
+        }
+        .hero-title .gold {
+            background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold-primary) 50%, var(--gold-dark) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero-subtitle-en {
+            font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 300;
+            color: var(--text-muted); letter-spacing: 3px; text-transform: uppercase;
+            margin-bottom: 32px; animation: fadeInUp 0.8s ease 0.25s both;
+        }
+        .hero-description {
+            font-size: 17px; font-weight: 300; line-height: 2;
+            color: var(--text-secondary); margin-bottom: 48px;
+            animation: fadeInUp 0.8s ease 0.35s both;
+        }
+        .hero-cta {
+            display: inline-flex; align-items: center; gap: 12px;
+            padding: 16px 36px;
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+            color: var(--bg-primary); text-decoration: none; border-radius: 12px;
+            font-size: 15px; font-weight: 600; letter-spacing: 0.5px;
+            transition: all 0.3s ease; animation: fadeInUp 0.8s ease 0.45s both;
+        }
+        .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(200, 164, 78, 0.3); }
+        .hero-cta svg { width: 20px; height: 20px; }
+
+        /* ── 図鑑モックアップ ── */
+        .gallery-showcase { padding: 40px 40px 100px; display: flex; justify-content: center; position: relative; }
+        .gallery-frame {
+            width: 320px; background: var(--bg-card); border-radius: 20px;
+            border: 1px solid var(--border-card); padding: 24px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.5), 0 0 80px var(--gold-glow);
+            animation: floatUp 1s ease 0.5s both;
+        }
+        .gallery-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .gallery-header-title { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--gold-light); }
+        .gallery-header-page { font-size: 12px; color: var(--text-muted); }
+        .slot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .slot { aspect-ratio: 1/1; border-radius: 10px; overflow: hidden; position: relative; }
+        .slot.filled {
+            background: radial-gradient(circle at 50% 35%, #2a2438, #14101c);
+            border: 1px solid rgba(200, 164, 78, 0.25);
+            animation: cardShimmer 3s ease infinite;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .slot.filled .gem { font-size: 26px; filter: drop-shadow(0 2px 8px rgba(200,164,78,0.4)); }
+        .slot.empty { border: 1px dashed rgba(200, 164, 78, 0.14); background: rgba(255,255,255,0.01); display: flex; align-items: center; justify-content: center; }
+        .slot.empty::after { content: '?'; color: rgba(200,164,78,0.18); font-size: 20px; font-weight: 700; }
+        .slot .card-shine {
+            position: absolute; inset: 0;
+            background: linear-gradient(125deg, transparent 30%, rgba(255,255,255,0.07) 50%, transparent 70%);
+            animation: shine 4s ease-in-out infinite;
+        }
+
+        .features { padding: 100px 40px; max-width: 1080px; margin: 0 auto; }
+        .section-label { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-primary); margin-bottom: 16px; }
+        .section-title { font-family: 'DM Serif Display', serif; font-size: clamp(30px, 5vw, 46px); font-weight: 400; line-height: 1.25; margin-bottom: 60px; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        .feature-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 16px; padding: 36px 32px; transition: all 0.4s ease; }
+        .feature-card:hover { border-color: var(--border-subtle); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .feature-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px; background: rgba(200, 164, 78, 0.08); border: 1px solid rgba(200, 164, 78, 0.12); }
+        .feature-card h3 { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+        .feature-card p { font-size: 14px; line-height: 1.8; color: var(--text-secondary); font-weight: 300; }
+
+        .philosophy { padding: 100px 40px; max-width: 800px; margin: 0 auto; text-align: center; position: relative; }
+        .philosophy::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; background: radial-gradient(ellipse, var(--gold-glow) 0%, transparent 70%); pointer-events: none; }
+        .philosophy-quote { font-family: 'DM Serif Display', serif; font-size: clamp(24px, 4vw, 36px); line-height: 1.6; position: relative; z-index: 1; margin-bottom: 24px; }
+        .philosophy-quote .gold { background: linear-gradient(135deg, var(--gold-light), var(--gold-primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .philosophy-body { font-size: 15px; line-height: 2; color: var(--text-secondary); font-weight: 300; position: relative; z-index: 1; }
+
+        .pricing { padding: 100px 40px; max-width: 1080px; margin: 0 auto; }
+        .pricing-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 60px; }
+        .pricing-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 16px; padding: 36px 32px; position: relative; overflow: hidden; }
+        .pricing-card.featured { border-color: var(--gold-primary); }
+        .pricing-card.featured::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--gold-dark), var(--gold-light), var(--gold-dark)); }
+        .pricing-label { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-primary); margin-bottom: 8px; }
+        .pricing-card h3 { font-family: 'DM Serif Display', serif; font-size: 28px; margin-bottom: 4px; }
+        .pricing-price { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+        .pricing-features { list-style: none; }
+        .pricing-features li { font-size: 14px; color: var(--text-secondary); padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; align-items: center; gap: 10px; }
+        .pricing-features li::before { content: '✓'; color: var(--gold-primary); font-size: 13px; }
+        .pricing-note { font-size: 12px; color: var(--text-muted); margin-top: 24px; text-align: center; }
+
+        footer { padding: 60px 40px; border-top: 1px solid var(--border-card); text-align: center; }
+        .footer-links { display: flex; justify-content: center; gap: 32px; margin-bottom: 24px; flex-wrap: wrap; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 13px; letter-spacing: 0.5px; transition: color 0.3s ease; }
+        .footer-links a:hover { color: var(--gold-primary); }
+        .footer-copy { font-size: 12px; color: var(--text-muted); letter-spacing: 0.5px; }
+        .footer-copy a { color: var(--text-muted); text-decoration: none; transition: color 0.3s ease; }
+        .footer-copy a:hover { color: var(--gold-primary); }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes floatUp { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shine { 0%, 100% { transform: translateX(-100%); } 50% { transform: translateX(100%); } }
+        @keyframes cardShimmer { 0%, 100% { opacity: 1; } 50% { opacity: 0.85; } }
+
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 768px) {
+            nav { padding: 16px 20px; }
+            .nav-links { gap: 18px; }
+            .nav-links a { font-size: 13px; }
+            .hero { padding: 100px 24px 60px; }
+            .hero-description { font-size: 15px; }
+            .gallery-showcase { padding: 20px 24px 80px; }
+            .gallery-frame { width: 300px; padding: 20px; }
+            .features, .philosophy, .pricing { padding: 80px 24px; }
+            .features-grid { grid-template-columns: 1fr; }
+            footer { padding: 40px 24px; }
+            .footer-links { gap: 20px; }
+        }
+        @media (max-width: 480px) {
+            .nav-links { gap: 14px; }
+            .gallery-frame { width: 270px; padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="nav-logo">お宝さんぽ</a>
+    <ul class="nav-links">
+        <li><a href="#features">特徴</a></li>
+        <li><a href="#pricing">料金</a></li>
+        <li><a href="#download">ダウンロード</a></li>
+        <li><a href="index-en.html" class="lang">EN</a></li>
+    </ul>
+</nav>
+
+<section class="hero" id="hero">
+    <div class="hero-content">
+        <div class="hero-badge">Treasure-Hunt Walking</div>
+        <h1 class="hero-title">
+            歩くたび、<br><span class="gold">宝の地図</span>が届く。
+        </h1>
+        <p class="hero-subtitle-en">Decode · Walk · Collect</p>
+        <p class="hero-description">
+            毎日、封印された瓶に「宝の地図」が流れ着く。<br>
+            読み解いて目的地まで歩けば、宝が手に入り図鑑に集まる。<br>
+            続かなかった散歩を、わくわくする冒険に。
+        </p>
+        <a href="#download" class="hero-cta">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            App Store からダウンロード
+        </a>
+    </div>
+</section>
+
+<section class="gallery-showcase">
+    <div class="gallery-frame">
+        <div class="gallery-header">
+            <span class="gallery-header-title">宝の図鑑</span>
+            <span class="gallery-header-page">12 / 30</span>
+        </div>
+        <div class="slot-grid">
+            <div class="slot filled"><span class="gem">💎</span><div class="card-shine"></div></div>
+            <div class="slot filled"><span class="gem">🏺</span><div class="card-shine"></div></div>
+            <div class="slot filled"><span class="gem">👑</span><div class="card-shine"></div></div>
+            <div class="slot filled"><span class="gem">💍</span><div class="card-shine"></div></div>
+            <div class="slot filled"><span class="gem">🔱</span><div class="card-shine"></div></div>
+            <div class="slot filled"><span class="gem">🪙</span><div class="card-shine"></div></div>
+            <div class="slot filled"><span class="gem">⚱️</span><div class="card-shine"></div></div>
+            <div class="slot empty"></div>
+            <div class="slot empty"></div>
+        </div>
+    </div>
+</section>
+
+<section class="features reveal" id="features">
+    <p class="section-label">Features</p>
+    <h2 class="section-title">散歩を、<br>もっと冒険に。</h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">🗺️</div>
+            <h3>毎日届く宝の地図</h3>
+            <p>封印された瓶が渚に流れ着く。開けると、今日の宝の地図が手に入ります。1日1枚、無理なく続く配布リズム。</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🧭</div>
+            <h3>読み解いて歩く</h3>
+            <p>地図を解読すると、現在地を起点に目的地が決定。徒歩ルートを案内し、たどり着けば宝を獲得します。</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">💎</div>
+            <h3>集める図鑑</h3>
+            <p>手に入れた宝は図鑑へ。被りなしで集まり、シリーズのコンプリートを目指せます。レアリティも多彩。</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">👣</div>
+            <h3>あしあと（記録）</h3>
+            <p>距離・歩数・連続記録を自動で記録。目的地のない自由な散歩でも、積み重ねがちゃんと残ります。</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3>プライバシー重視</h3>
+            <p>GPSの軌跡や精密な位置は<strong>あなたの端末内にのみ</strong>保存。外部サーバーへ送信しません。</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🌗</div>
+            <h3>ダーク＆ライト</h3>
+            <p>月夜の渚と夜明けの渚。革と真鍮、羊皮紙——2つのアンティークなテーマで楽しめます。</p>
+        </div>
+    </div>
+</section>
+
+<section class="philosophy reveal">
+    <p class="section-label">Philosophy</p>
+    <p class="philosophy-quote">
+        位置ゲーではなく、<br>
+        <span class="gold">散歩のご褒美装置。</span>
+    </p>
+    <p class="philosophy-body">
+        競争でも、課金前提でもありません。アカウントも要りません。<br>
+        ただ「今日もちょっと歩いてみよう」と思える、<br>
+        小さなご褒美を毎日お届けします。<br>
+        集めきれば、固定構成の宝がすべて揃います。
+    </p>
+</section>
+
+<section class="pricing reveal" id="pricing">
+    <p class="section-label">Pricing</p>
+    <h2 class="section-title">はじめよう、無料で。</h2>
+    <div class="pricing-cards">
+        <div class="pricing-card">
+            <p class="pricing-label">Free</p>
+            <h3>無料プラン</h3>
+            <p class="pricing-price">¥0</p>
+            <ul class="pricing-features">
+                <li>1日1枚の宝の地図（広告で+2枚）</li>
+                <li>宝の棚 5枠</li>
+                <li>図鑑・あしあと（基本）</li>
+                <li>ダーク＆ライトテーマ</li>
+            </ul>
+        </div>
+        <div class="pricing-card featured">
+            <p class="pricing-label">Premium</p>
+            <h3>Premium</h3>
+            <p class="pricing-price">¥300 / 月 ・ ¥2,400 / 年</p>
+            <ul class="pricing-features">
+                <li>1日3枚の宝の地図</li>
+                <li>宝の棚 30枠</li>
+                <li>広告なし</li>
+                <li>詳しい統計・限定テーマ</li>
+                <li>年額は7日間の無料トライアル付き</li>
+            </ul>
+        </div>
+    </div>
+    <p class="pricing-note">価格は変更される場合があります。最新の価格はアプリ内および App Store の表示をご確認ください。</p>
+</section>
+
+<section class="philosophy reveal" id="download" style="padding-bottom: 120px;">
+    <p class="section-label">Download</p>
+    <p class="philosophy-quote" style="margin-bottom: 36px;">
+        さあ、<br><span class="gold">宝の地図を開こう。</span>
+    </p>
+    <a href="#" class="hero-cta" style="animation: none; opacity: 1;">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        App Store からダウンロード
+    </a>
+</section>
+
+<footer>
+    <div class="footer-links">
+        <a href="privacy-policy.html">プライバシーポリシー</a>
+        <a href="terms.html">利用規約</a>
+        <a href="privacy-policy-en.html">Privacy Policy</a>
+        <a href="terms-en.html">Terms of Service</a>
+        <a href="mailto:appstake35@gmail.com">お問い合わせ</a>
+        <a href="https://yamashita8734.github.io/">AppsTake</a>
+    </div>
+    <p class="footer-copy">© 2026 <a href="https://yamashita8734.github.io/">AppsTake</a>. All rights reserved.</p>
+</footer>
+
+<script>
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) { entry.target.classList.add('visible'); }
+        });
+    }, { threshold: 0.15 });
+    reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
