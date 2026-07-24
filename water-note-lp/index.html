@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <script>document.documentElement.classList.add('js');</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>水ノート - スマートな水分補給トラッカー</title>
@@ -11,7 +12,7 @@
   <meta property="og:url" content="https://appstake35.github.io/water-note-lp/">
   <meta property="og:image" content="https://appstake35.github.io/water-note-lp/screenshot.png">
   <link rel="canonical" href="https://appstake35.github.io/water-note-lp/">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E💧%3C/text%3E%3C/svg%3E">
+  <link rel="icon" type="image/png" href="../assets/icons/water-note.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -206,8 +207,6 @@
       letter-spacing: 0.2em;
       color: var(--color-primary);
       margin-bottom: 24px;
-      opacity: 0;
-      animation: fadeInUp 0.8s ease 0.2s forwards;
     }
 
     .hero h1 {
@@ -216,8 +215,6 @@
       font-weight: 700;
       line-height: 1.25;
       margin-bottom: 16px;
-      opacity: 0;
-      animation: fadeInUp 0.8s ease 0.4s forwards;
     }
 
     .hero h1 .gradient-text {
@@ -234,8 +231,6 @@
       letter-spacing: 0.25em;
       color: var(--color-text-muted);
       margin-bottom: 24px;
-      opacity: 0;
-      animation: fadeInUp 0.8s ease 0.5s forwards;
     }
 
     .hero-description {
@@ -244,8 +239,6 @@
       max-width: 520px;
       margin: 0 auto 40px;
       line-height: 1.9;
-      opacity: 0;
-      animation: fadeInUp 0.8s ease 0.6s forwards;
     }
 
     .hero-cta {
@@ -259,11 +252,22 @@
       border-radius: 50px;
       font-size: 0.95rem;
       font-weight: 600;
-      transition: all 0.3s;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
       box-shadow: 0 4px 24px rgba(59, 158, 255, 0.3);
-      opacity: 0;
-      animation: fadeInUp 0.8s ease 0.7s forwards;
+      position: relative;
+      overflow: hidden;
     }
+
+    .hero-cta::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.35) 50%, transparent 65%);
+      transform: translateX(-120%);
+    }
+
+    .hero-cta:hover::after { animation: ctaSweep 0.9s ease; }
+    @keyframes ctaSweep { to { transform: translateX(120%); } }
 
     .hero-cta:hover {
       transform: translateY(-2px);
@@ -278,10 +282,35 @@
     /* Hero Phone Mockup */
     .hero-mockup {
       margin-top: 60px;
-      opacity: 0;
-      animation: fadeInUp 1s ease 0.9s forwards;
       position: relative;
     }
+
+    /* ヒーローの実アプリアイコン */
+    .hero-app-icon {
+      width: 88px;
+      height: 88px;
+      border-radius: 20px;
+      display: block;
+      margin: 0 auto 28px;
+      position: relative;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 48px var(--color-primary-glow);
+    }
+
+    /* JS有効時のみ: ヒーローの段階的導入（JS無効・クローラーには常に全文表示） */
+    html.js .hero-app-icon,
+    html.js .hero-label,
+    html.js .hero h1,
+    html.js .hero-tagline,
+    html.js .hero-description,
+    html.js .hero .hero-cta,
+    html.js .hero-mockup { opacity: 0; animation: fadeInUp 0.9s ease forwards; }
+    html.js .hero-app-icon    { animation-delay: 0.05s; }
+    html.js .hero-label       { animation-delay: 0.15s; }
+    html.js .hero h1          { animation-delay: 0.25s; }
+    html.js .hero-tagline     { animation-delay: 0.35s; }
+    html.js .hero-description { animation-delay: 0.45s; }
+    html.js .hero .hero-cta   { animation-delay: 0.55s; }
+    html.js .hero-mockup      { animation-delay: 0.75s; }
 
     .phone-frame {
       width: 260px;
@@ -375,7 +404,10 @@
       font-size: 2rem;
       margin-bottom: 20px;
       display: block;
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     }
+
+    .feature-card:hover .feature-icon { transform: translateY(-4px) rotate(-4deg); }
 
     .feature-card h3 {
       font-family: var(--font-display);
@@ -618,15 +650,28 @@
       }
     }
 
-    .fade-in {
+    html.js .fade-in {
       opacity: 0;
       transform: translateY(24px);
       transition: opacity 0.7s ease, transform 0.7s ease;
     }
 
-    .fade-in.visible {
+    html.js .fade-in.visible {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    /* ── Reduced motion: すべての動きを止める ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+      html { scroll-behavior: auto; }
+      html.js .hero-app-icon, html.js .hero-label, html.js .hero h1,
+      html.js .hero-tagline, html.js .hero-description,
+      html.js .hero .hero-cta, html.js .hero-mockup { opacity: 1; }
+      html.js .fade-in { opacity: 1; transform: none; }
     }
 
     /* ===== Water Drop Animation (decorative) ===== */
@@ -714,13 +759,14 @@
   <nav>
     <div class="nav-inner">
       <a href="#" class="nav-logo">
-        <span class="logo-icon">💧</span>
+        <img class="logo-icon" src="../assets/icons/water-note.png" alt="" width="32" height="32" style="background:none;">
         水ノート
       </a>
       <ul class="nav-links">
         <li><a href="#features">Features</a></li>
         <li><a href="#pricing">Pricing</a></li>
         <li><a href="#download">Download</a></li>
+        <li><a href="../">AppsTake</a></li>
       </ul>
     </div>
   </nav>
@@ -735,6 +781,7 @@
       <div class="drop"></div>
     </div>
 
+    <img class="hero-app-icon" src="../assets/icons/water-note.png" alt="水ノート アプリアイコン" width="88" height="88">
     <p class="hero-label">Smart Water Tracker</p>
 
     <h1>
