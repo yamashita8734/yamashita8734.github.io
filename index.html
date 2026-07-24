@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+    <script>document.documentElement.classList.add('js');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apps Take - Flutter Developer</title>
-    <meta name="description" content="使う人の日常を、少しだけ心地よくする。シンプルで美しいアプリを通じて、毎日使いたくなる体験をデザインしています。">
+    <title>AppsTake - 使う人の日常を、少しだけ心地よくする</title>
+    <meta name="description" content="AppsTake は、シンプルで美しい iOS アプリをつくる個人開発スタジオです。Kollect・お宝さんぽ・つぶやきメモ・水ノートを開発しています。">
     <link rel="canonical" href="https://appstake35.github.io/">
-    <meta property="og:title" content="Apps Take - Flutter Developer">
-    <meta property="og:description" content="使う人の日常を、少しだけ心地よくする。シンプルで美しいアプリを通じて、毎日使いたくなる体験をデザインしています。">
+    <meta property="og:title" content="AppsTake - 使う人の日常を、少しだけ心地よくする">
+    <meta property="og:description" content="シンプルで美しい iOS アプリをつくる個人開発スタジオ。Kollect・お宝さんぽ・つぶやきメモ・水ノート。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://appstake35.github.io/">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E💠%3C/text%3E%3C/svg%3E">
@@ -15,734 +16,670 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+JP:wght@400;700&family=Outfit:wght@400;600&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --navy-deep: #0A1628;
-            --navy-mid: #1A2B47;
-            --navy-light: #2C3E5C;
-            --accent-blue: #00D9FF;
-            --accent-amber: #FFB84D;
-            --text-primary: #F8F9FA;
-            --text-secondary: #8B92A8;
-            --border: rgba(139, 146, 168, 0.15);
+            --bg: #0b0c10;
+            --bg-elevated: #12141a;
+            --bg-card: #14161d;
+            --accent: #d9c9a3;          /* 静かなシャンパン。会社の基調色はこの1色だけ */
+            --accent-bright: #ece0c4;
+            --accent-glow: rgba(217, 201, 163, 0.10);
+            --text: #f2f1ec;
+            --text-secondary: #a3a6b0;
+            --text-muted: #767983;
+            --border: rgba(217, 201, 163, 0.10);
+            --border-strong: rgba(217, 201, 163, 0.22);
+            --serif: 'DM Serif Display', serif;
+            --sans: 'Outfit', 'Noto Sans JP', sans-serif;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
 
         body {
-            font-family: 'DM Sans', sans-serif;
-            background-color: var(--navy-deep);
-            color: var(--text-primary);
-            line-height: 1.6;
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Background Pattern */
-        body::before {
-            content: '';
+        /* ── ゆっくり漂う背景光（質感のための、ほとんど気づかない動き） ── */
+        .bg-glow {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(0, 217, 255, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(255, 184, 77, 0.06) 0%, transparent 50%);
+            inset: 0;
             pointer-events: none;
             z-index: 0;
         }
+        .bg-glow::before,
+        .bg-glow::after {
+            content: '';
+            position: absolute;
+            width: 70vmax;
+            height: 70vmax;
+            border-radius: 50%;
+            filter: blur(60px);
+        }
+        .bg-glow::before {
+            top: -35vmax;
+            left: -15vmax;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 65%);
+            animation: drift1 46s ease-in-out infinite alternate;
+        }
+        .bg-glow::after {
+            bottom: -40vmax;
+            right: -20vmax;
+            background: radial-gradient(circle, rgba(163, 180, 217, 0.06) 0%, transparent 65%);
+            animation: drift2 58s ease-in-out infinite alternate;
+        }
+        @keyframes drift1 { to { transform: translate(8vmax, 6vmax); } }
+        @keyframes drift2 { to { transform: translate(-7vmax, -5vmax); } }
 
-        /* Container */
         .container {
-            max-width: 1200px;
+            max-width: 1080px;
             margin: 0 auto;
             padding: 0 24px;
             position: relative;
             z-index: 1;
         }
 
-        /* Navigation */
+        /* ── Navigation ── */
         nav {
-            padding: 32px 0;
-            animation: fadeInDown 0.8s ease-out;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: rgba(11, 12, 16, 0.82);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
         }
-
-        .nav-content {
+        .nav-inner {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 64px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
         .logo {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-primary);
+            font-family: var(--serif);
+            font-size: 22px;
+            color: var(--text);
             text-decoration: none;
-            letter-spacing: -0.02em;
+            letter-spacing: 0.04em;
         }
-
+        .logo span { color: var(--accent); }
         .nav-links {
             display: flex;
-            gap: 32px;
+            gap: 8px;
             list-style: none;
         }
-
         .nav-links a {
+            display: inline-flex;
+            align-items: center;
+            min-height: 44px;
+            padding: 0 12px;
             color: var(--text-secondary);
             text-decoration: none;
             font-size: 14px;
-            font-weight: 500;
-            transition: color 0.3s ease;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.04em;
+            transition: color 0.25s ease;
         }
+        .nav-links a:hover { color: var(--accent-bright); }
 
-        .nav-links a:hover {
-            color: var(--accent-blue);
-        }
-
-        /* Hero Section */
+        /* ── Hero ── */
         .hero {
-            padding: 100px 0 120px;
-            animation: fadeIn 1s ease-out;
+            padding: 168px 0 96px;
+            position: relative;
         }
-
-        .hero-content {
-            max-width: 800px;
-        }
-
-        .hero-badge {
-            display: inline-block;
-            padding: 8px 16px;
-            background: var(--navy-mid);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--accent-blue);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            margin-bottom: 24px;
-            animation: fadeInUp 0.8s ease-out 0.2s both;
-        }
-
-        .hero h1 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(42px, 6vw, 72px);
-            font-weight: 700;
-            line-height: 1.1;
-            letter-spacing: -0.03em;
-            margin-bottom: 24px;
-            animation: fadeInUp 0.8s ease-out 0.3s both;
-        }
-
-        .hero h1 .highlight {
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-amber));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-description {
-            font-size: 18px;
-            color: var(--text-secondary);
-            line-height: 1.7;
-            margin-bottom: 40px;
-            animation: fadeInUp 0.8s ease-out 0.4s both;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 16px;
-            animation: fadeInUp 0.8s ease-out 0.5s both;
-        }
-
-        .btn {
-            padding: 14px 32px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.3s ease;
+        .hero-eyebrow {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 32px;
         }
-
-        .btn-primary {
-            background: var(--accent-blue);
-            color: var(--navy-deep);
+        .hero-eyebrow::before {
+            content: '';
+            width: 28px;
+            height: 1px;
+            background: var(--accent);
+            opacity: 0.6;
         }
-
-        .btn-primary:hover {
-            background: #00F0FF;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--accent-blue);
-            background: rgba(0, 217, 255, 0.05);
-        }
-
-        /* Section Title */
-        .section-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(36px, 5vw, 48px);
+        .hero h1 {
+            font-family: 'Noto Sans JP', var(--sans);
             font-weight: 700;
-            letter-spacing: -0.02em;
-            margin-bottom: 16px;
+            font-size: clamp(30px, 5.4vw, 54px);
+            line-height: 1.42;
+            letter-spacing: -0.015em;
+            max-width: 20em;
+            margin-bottom: 28px;
         }
-
-        .section-subtitle {
+        .hero h1 .soft { color: var(--accent-bright); }
+        .hero-lede {
             font-size: 16px;
             color: var(--text-secondary);
-            margin-bottom: 60px;
+            line-height: 2.1;
+            max-width: 34em;
+            margin-bottom: 48px;
         }
-
-        /* Apps Section */
-        .apps-section {
-            padding: 80px 0;
-        }
-
-        .apps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 32px;
-        }
-
-        .app-card {
-            background: var(--navy-mid);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px;
-            transition: all 0.4s ease;
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 52px;
+            padding: 0 32px;
+            background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+            color: #191509;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
             position: relative;
             overflow: hidden;
-            animation: fadeInUp 0.8s ease-out both;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 36px rgba(217, 201, 163, 0.22);
+        }
+        /* ホバーで光が一度だけ走る */
+        .hero-cta::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.35) 50%, transparent 65%);
+            transform: translateX(-120%);
+        }
+        .hero-cta:hover::after { animation: sweep 0.9s ease; }
+        @keyframes sweep { to { transform: translateX(120%); } }
+        .hero-cta .arrow { transition: transform 0.3s ease; }
+        .hero-cta:hover .arrow { transform: translateY(3px); }
+
+        /* ヒーローの段階的導入（JS有効時のみ。無効なら最初から全文表示） */
+        html.js .hero-eyebrow,
+        html.js .hero h1,
+        html.js .hero-lede,
+        html.js .hero-cta { opacity: 0; animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        html.js .hero-eyebrow { animation-delay: 0.05s; }
+        html.js .hero h1     { animation-delay: 0.15s; }
+        html.js .hero-lede   { animation-delay: 0.3s; }
+        html.js .hero-cta    { animation-delay: 0.45s; }
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(26px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
+        /* ── セクション見出し ── */
+        .section-label {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-family: 'Noto Sans JP', var(--sans);
+            font-weight: 700;
+            font-size: clamp(24px, 3.6vw, 36px);
+            line-height: 1.4;
+            letter-spacing: -0.01em;
+            margin-bottom: 56px;
+        }
+
+        /* ── Apps ── */
+        .apps-section { padding: 96px 0; }
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+        .app-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 36px 32px 28px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                        border-color 0.4s ease, box-shadow 0.4s ease;
+        }
         .app-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-blue), var(--accent-amber));
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
             transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.4s ease;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
         }
-
         .app-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--accent-blue);
-            box-shadow: 0 20px 60px rgba(0, 217, 255, 0.15);
+            transform: translateY(-6px);
+            border-color: var(--border-strong);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
         }
-
-        .app-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .app-card:nth-child(1) { animation-delay: 0.1s; }
-        .app-card:nth-child(2) { animation-delay: 0.2s; }
-        .app-card:nth-child(3) { animation-delay: 0.3s; }
-        .app-card:nth-child(4) { animation-delay: 0.4s; }
-
-        .app-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            background: rgba(0, 217, 255, 0.1);
-            border: 1px solid rgba(0, 217, 255, 0.3);
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--accent-blue);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-        }
-
-        .app-badge.coming-soon {
-            background: rgba(255, 184, 77, 0.1);
-            border-color: rgba(255, 184, 77, 0.3);
-            color: var(--accent-amber);
-        }
-
+        .app-card:hover::before { transform: scaleX(1); }
         .app-icon {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, var(--navy-light), var(--navy-mid));
+            width: 60px;
+            height: 60px;
             border-radius: 14px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
-            font-size: 32px;
-        }
-
-        .app-card h3 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--text-primary);
-        }
-
-        .app-card p {
-            font-size: 15px;
-            color: var(--text-secondary);
-            line-height: 1.6;
+            font-size: 28px;
             margin-bottom: 24px;
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
         }
-
+        .app-card:hover .app-icon { transform: translateY(-4px) rotate(-3deg); }
+        .app-card h3 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .app-copy {
+            font-family: var(--serif);
+            font-size: 15px;
+            color: var(--accent);
+            letter-spacing: 0.02em;
+            margin-bottom: 14px;
+        }
+        .app-card > p:not(.app-copy) {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+        .app-links {
+            display: flex;
+            gap: 8px 24px;
+            flex-wrap: wrap;
+            border-top: 1px solid var(--border);
+            padding-top: 8px;
+        }
         .app-link {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            color: var(--accent-blue);
+            min-height: 44px;
+            color: var(--text);
             text-decoration: none;
             font-size: 14px;
-            font-weight: 500;
-            transition: gap 0.3s ease;
+            font-weight: 600;
         }
+        .app-link .arrow { transition: transform 0.3s ease; }
+        .app-link:hover { color: var(--accent-bright); }
+        .app-link:hover .arrow { transform: translateX(4px); }
+        .app-link.secondary { color: var(--text-secondary); font-weight: 400; }
+        .app-link.secondary:hover { color: var(--accent-bright); }
 
-        .app-link:hover {
-            gap: 12px;
-        }
-
-        /* About Section */
-        .about-section {
-            padding: 80px 0;
-        }
-
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 80px;
-            align-items: center;
-        }
-
-        .about-text {
-            animation: fadeInLeft 0.8s ease-out;
-        }
-
-        .philosophy-card {
-            background: var(--navy-mid);
-            border: 1px solid var(--border);
-            border-left: 4px solid var(--accent-blue);
-            border-radius: 12px;
-            padding: 32px;
+        /* ── Philosophy ── */
+        .philosophy-section { padding: 96px 0; }
+        .philosophy-quote {
+            font-family: 'Noto Sans JP', var(--sans);
+            font-weight: 700;
+            font-size: clamp(22px, 3.4vw, 32px);
+            line-height: 1.7;
+            max-width: 24em;
             margin-bottom: 24px;
-            animation: fadeInRight 0.8s ease-out;
         }
-
-        .philosophy-card h3 {
-            font-size: 32px;
-            font-family: 'Cormorant Garamond', serif;
-            margin-bottom: 16px;
-            color: var(--accent-blue);
-        }
-
-        .philosophy-card p {
-            font-size: 16px;
+        .philosophy-quote .soft { color: var(--accent-bright); }
+        .philosophy-body {
+            font-size: 15px;
             color: var(--text-secondary);
-            line-height: 1.8;
+            line-height: 2.1;
+            max-width: 36em;
+            margin-bottom: 48px;
         }
-
         .principles {
             list-style: none;
+            max-width: 560px;
         }
-
         .principles li {
-            padding: 16px 0;
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            padding: 20px 4px;
             border-bottom: 1px solid var(--border);
             font-size: 15px;
             color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 12px;
         }
-
-        .principles li:last-child {
-            border-bottom: none;
+        .principles li:first-child { border-top: 1px solid var(--border); }
+        .principles li .num {
+            font-family: var(--serif);
+            font-size: 13px;
+            color: var(--accent);
+            letter-spacing: 0.1em;
         }
-
-        .principles li::before {
-            content: '→';
-            color: var(--accent-blue);
+        .principles li strong {
+            color: var(--text);
             font-weight: 700;
-            font-size: 18px;
+            margin-right: 8px;
         }
 
-        /* Contact Section */
-        .contact-section {
-            padding: 80px 0 100px;
-            text-align: center;
+        /* ── Support ── */
+        .support-section { padding: 96px 0 112px; }
+        .support-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
         }
-
-        .contact-content {
-            max-width: 600px;
-            margin: 0 auto;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 40px;
-        }
-
-        .social-link {
-            width: 56px;
-            height: 56px;
-            background: var(--navy-mid);
+        .support-card {
+            background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 24px;
+            border-radius: 18px;
+            padding: 32px;
         }
-
-        .social-link:hover {
-            background: var(--accent-blue);
-            color: var(--navy-deep);
-            border-color: var(--accent-blue);
-            transform: translateY(-4px);
+        .support-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
         }
-
-        /* Footer */
-        footer {
-            padding: 40px 0;
-            border-top: 1px solid var(--border);
-            text-align: center;
-        }
-
-        footer p {
+        .support-card p {
             font-size: 14px;
             color: var(--text-secondary);
+            line-height: 1.9;
+            margin-bottom: 16px;
+        }
+        .support-mail {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 44px;
+            color: var(--accent-bright);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .support-mail:hover { text-decoration: underline; text-underline-offset: 4px; }
+        .legal-list { list-style: none; }
+        .legal-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            flex-wrap: wrap;
+        }
+        .legal-list li:last-child { border-bottom: none; }
+        .legal-list .app-name { color: var(--text); font-weight: 700; }
+        .legal-links { display: flex; gap: 4px; flex-wrap: wrap; }
+        .legal-links a {
+            display: inline-flex;
+            align-items: center;
+            min-height: 40px;
+            padding: 0 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.25s ease;
+        }
+        .legal-links a:hover { color: var(--accent-bright); }
+
+        /* ── Footer ── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 0;
+            position: relative;
+            z-index: 1;
+        }
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .footer-copy { font-size: 13px; color: var(--text-muted); }
+        .footer-github {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 44px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.25s ease;
+        }
+        .footer-github:hover { color: var(--accent-bright); }
+
+        /* ── スクロール出現（JS有効時のみ隠す。無効時・クローラーには常に全文） ── */
+        html.js .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        html.js .reveal.visible { opacity: 1; transform: translateY(0); }
+        html.js .reveal[data-delay="1"] { transition-delay: 0.08s; }
+        html.js .reveal[data-delay="2"] { transition-delay: 0.16s; }
+        html.js .reveal[data-delay="3"] { transition-delay: 0.24s; }
+
+        /* ── Reduced motion: すべての動きを止める ── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+            html { scroll-behavior: auto; }
+            html.js .hero-eyebrow, html.js .hero h1,
+            html.js .hero-lede, html.js .hero-cta { opacity: 1; }
+            html.js .reveal { opacity: 1; transform: none; }
         }
 
-        /* Animations */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes fadeInRight {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* Responsive */
+        /* ── Responsive ── */
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .hero {
-                padding: 60px 0 80px;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .apps-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .about-content {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-
-            .social-links {
-                flex-wrap: wrap;
-            }
+            .nav-links { gap: 0; }
+            .nav-links a { padding: 0 8px; font-size: 13px; }
+            .hero { padding: 136px 0 72px; }
+            .hero-lede { font-size: 15px; }
+            .apps-section, .philosophy-section { padding: 72px 0; }
+            .support-section { padding: 72px 0 88px; }
+            .apps-grid { grid-template-columns: 1fr; gap: 16px; }
+            .support-grid { grid-template-columns: 1fr; gap: 16px; }
+            .app-card { padding: 28px 24px 20px; }
+            .section-title { margin-bottom: 40px; }
+            .footer-inner { justify-content: center; text-align: center; }
         }
     </style>
 </head>
 <body>
+
+    <div class="bg-glow" aria-hidden="true"></div>
+
     <!-- Navigation -->
     <nav>
-        <div class="container">
-            <div class="nav-content">
-                <a href="#" class="logo">Apps Take</a>
-                <ul class="nav-links">
-                    <li><a href="#apps">Apps</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </div>
+        <div class="nav-inner">
+            <a href="#" class="logo">Apps<span>Take</span></a>
+            <ul class="nav-links">
+                <li><a href="#apps">Apps</a></li>
+                <li><a href="#philosophy">Philosophy</a></li>
+                <li><a href="#support">Support</a></li>
+            </ul>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
+    <!-- 1. Hero -->
+    <header class="hero">
         <div class="container">
-            <div class="hero-content">
-                <div class="hero-badge">Flutter Developer</div>
-                <h1>
-                    Crafting<br>
-                    <span class="highlight">Unprecedented</span><br>
-                    Mobile Experiences
-                </h1>
-                <p class="hero-description">
-                    使う人の日常を、少しだけ心地よくする。<br><br>
-                    シンプルで美しいアプリを通じて、毎日使いたくなる体験をデザインしています。
-                </p>
-                <div class="cta-buttons">
-                    <a href="#apps" class="btn btn-primary">
-                        View Projects
-                        <span>↓</span>
-                    </a>
-                    <a href="#contact" class="btn btn-secondary">Get in Touch</a>
-                </div>
-            </div>
+            <p class="hero-eyebrow">AppsTake — Indie App Studio</p>
+            <h1>使う人の日常を、<br><span class="soft">少しだけ心地よくする。</span></h1>
+            <p class="hero-lede">
+                AppsTake は、シンプルで美しい iOS アプリをつくる個人開発スタジオです。<br>
+                機能を足すことよりも、削ぎ落として研ぎ澄ますこと。<br>
+                毎日ふれるものだからこそ、細部まで丁寧に。
+            </p>
+            <a href="#apps" class="hero-cta">
+                アプリを見る
+                <span class="arrow">↓</span>
+            </a>
         </div>
-    </section>
+    </header>
 
-    <!-- Apps Section -->
+    <!-- 2. Apps -->
     <section class="apps-section" id="apps">
         <div class="container">
-            <h2 class="section-title">Featured Apps</h2>
-            <p class="section-subtitle">革新的なモバイル体験を提供するアプリケーション</p>
-            
+            <p class="section-label reveal">Apps</p>
+            <h2 class="section-title reveal">4 つのアプリを<br>お届けしています。</h2>
+
             <div class="apps-grid">
                 <!-- Kollect -->
-                <div class="app-card">
-                    <span class="app-badge">Released</span>
+                <article class="app-card reveal">
                     <div class="app-icon">📖</div>
                     <h3>Kollect</h3>
+                    <p class="app-copy">大切なカードを、大切に飾る。</p>
                     <p>お気に入りのトレーディングカードを厳選して、美しく飾る。コレクターのためのプレミアムなデジタルカードバインダー。</p>
-                    <div class="app-links" style="display:flex; gap:24px; flex-wrap:wrap;">
-                        <a href="kollect/" class="app-link">
-                            詳しく見る
-                            <span>→</span>
-                        </a>
-                        <a href="https://apps.apple.com/app/id6759167181" class="app-link" target="_blank" rel="noopener">
-                            App Store
-                            <span>→</span>
-                        </a>
+                    <div class="app-links">
+                        <a href="kollect/" class="app-link">詳しく見る <span class="arrow">→</span></a>
+                        <a href="https://apps.apple.com/app/id6759167181" class="app-link secondary" target="_blank" rel="noopener">App Store <span class="arrow">→</span></a>
                     </div>
-                </div>
+                </article>
 
                 <!-- お宝さんぽ -->
-                <div class="app-card">
-                    <span class="app-badge">Released</span>
+                <article class="app-card reveal" data-delay="1">
                     <div class="app-icon">🗺️</div>
                     <h3>お宝さんぽ</h3>
-                    <p>歩くたび、宝の地図が届く。読み解いて歩けば、宝が手に入り図鑑に集まる。散歩を続けたくなるトレジャーハントウォーキング。</p>
-                    <div class="app-links" style="display:flex; gap:24px; flex-wrap:wrap;">
-                        <a href="otakara-sanpo/" class="app-link">
-                            詳しく見る
-                            <span>→</span>
-                        </a>
-                        <a href="https://apps.apple.com/app/id6782397597" class="app-link" target="_blank" rel="noopener">
-                            App Store
-                            <span>→</span>
-                        </a>
+                    <p class="app-copy">歩くたび、宝の地図が届く。</p>
+                    <p>宝の地図を読み解いて歩けば、宝が手に入り図鑑に集まる。散歩を続けたくなるトレジャーハント・ウォーキング。</p>
+                    <div class="app-links">
+                        <a href="otakara-sanpo/" class="app-link">詳しく見る <span class="arrow">→</span></a>
+                        <a href="https://apps.apple.com/app/id6782397597" class="app-link secondary" target="_blank" rel="noopener">App Store <span class="arrow">→</span></a>
                     </div>
-                </div>
+                </article>
 
                 <!-- つぶやきメモ -->
-                <div class="app-card">
-                    <span class="app-badge">Released</span>
+                <article class="app-card reveal" data-delay="2">
                     <div class="app-icon">🎙️</div>
                     <h3>つぶやきメモ</h3>
-                    <p>声でつぶやくだけで、やることリストが完成。料理中・通勤中・手が離せない瞬間のための、シンプルな音声タスク管理。</p>
-                    <div class="app-links" style="display:flex; gap:24px; flex-wrap:wrap;">
-                        <a href="tsubuyaki-memo-lp/" class="app-link">
-                            詳しく見る
-                            <span>→</span>
-                        </a>
-                        <a href="https://apps.apple.com/app/id6758319955" class="app-link" target="_blank" rel="noopener">
-                            App Store
-                            <span>→</span>
-                        </a>
+                    <p class="app-copy">声でつぶやくだけで、リストが完成。</p>
+                    <p>料理中、通勤中、手が離せない瞬間に。声だけでタスクを記録して、ワンタップで完了するシンプルな音声タスク管理。</p>
+                    <div class="app-links">
+                        <a href="tsubuyaki-memo-lp/" class="app-link">詳しく見る <span class="arrow">→</span></a>
+                        <a href="https://apps.apple.com/app/id6758319955" class="app-link secondary" target="_blank" rel="noopener">App Store <span class="arrow">→</span></a>
                     </div>
-                </div>
+                </article>
 
                 <!-- 水ノート -->
-                <div class="app-card">
-                    <span class="app-badge">Released</span>
+                <article class="app-card reveal" data-delay="3">
                     <div class="app-icon">💧</div>
                     <h3>水ノート</h3>
-                    <p>毎日の水分摂取を簡単に記録・管理できるシンプルなアプリ。ワンタップで記録、見やすいプログレス表示、統計グラフで健康管理をサポート。</p>
-                    <div class="app-links" style="display:flex; gap:24px; flex-wrap:wrap;">
-                        <a href="water-note-lp/" class="app-link">
-                            詳しく見る
-                            <span>→</span>
-                        </a>
-                        <a href="https://apps.apple.com/app/id6757661748" class="app-link" target="_blank" rel="noopener">
-                            App Store
-                            <span>→</span>
-                        </a>
+                    <p class="app-copy">水を飲む、それだけを心地よく。</p>
+                    <p>ワンタップで水分量を記録。リマインダーと統計グラフで、健康的な水分補給の習慣をやさしくサポート。</p>
+                    <div class="app-links">
+                        <a href="water-note-lp/" class="app-link">詳しく見る <span class="arrow">→</span></a>
+                        <a href="https://apps.apple.com/app/id6757661748" class="app-link secondary" target="_blank" rel="noopener">App Store <span class="arrow">→</span></a>
                     </div>
-                </div>
+                </article>
             </div>
         </div>
     </section>
 
-    <!-- About Section -->
-    <section class="about-section" id="about">
+    <!-- 3. Philosophy -->
+    <section class="philosophy-section" id="philosophy">
         <div class="container">
-            <div class="about-content">
-                <div class="about-text">
-                    <h2 class="section-title">Philosophy</h2>
-                    <p class="section-subtitle">開発に対する信念とアプローチ</p>
-                    
-                    <div class="philosophy-card">
-                        <h3>使う人の日常を、少しだけ心地よくする</h3>
-                        <p>
-                            シンプルで美しいアプリを通じて、毎日使いたくなる体験をデザインしています。
-                            細部まで丁寧に作り込むことで、日常に溶け込む質の高いアプリケーションを目指しています。
-                        </p>
-                    </div>
+            <p class="section-label reveal">Philosophy</p>
+            <p class="philosophy-quote reveal">
+                シンプルさは、<br><span class="soft">複雑さの先にある。</span>
+            </p>
+            <p class="philosophy-body reveal">
+                多機能であることは、良いアプリの条件ではないと考えています。<br>
+                本当に必要なものだけを残し、説明書がなくても使える形に磨き上げる。<br>
+                それが、毎日使いたくなるアプリへの最短距離だと信じています。
+            </p>
+            <ul class="principles">
+                <li class="reveal"><span class="num">01</span><span><strong>削ぎ落とす</strong>足すより引く。迷ったら、削る。</span></li>
+                <li class="reveal" data-delay="1"><span class="num">02</span><span><strong>毎日の心地よさ</strong>開くたびに、少しうれしい体験を。</span></li>
+                <li class="reveal" data-delay="2"><span class="num">03</span><span><strong>細部まで丁寧に</strong>気づかれない部分こそ、丁寧につくる。</span></li>
+            </ul>
+        </div>
+    </section>
 
-                    <ul class="principles">
-                        <li>シンプルで美しいデザイン</li>
-                        <li>毎日使いたくなる心地よさ</li>
-                        <li>細部まで丁寧な作り込み</li>
-                        <li>Flutter で実現する高品質な体験</li>
+    <!-- 4. Support -->
+    <section class="support-section" id="support">
+        <div class="container">
+            <p class="section-label reveal">Support</p>
+            <h2 class="section-title reveal">お問い合わせ・規約</h2>
+            <div class="support-grid">
+                <div class="support-card reveal">
+                    <h3>お問い合わせ</h3>
+                    <p>アプリの不具合報告・ご要望・その他のご連絡は、メールでお気軽にどうぞ。</p>
+                    <a href="mailto:appstake35@gmail.com" class="support-mail">appstake35@gmail.com</a>
+                </div>
+                <div class="support-card reveal" data-delay="1">
+                    <h3>各アプリの規約</h3>
+                    <ul class="legal-list">
+                        <li>
+                            <span class="app-name">Kollect</span>
+                            <span class="legal-links">
+                                <a href="kollect/privacy-policy.html">プライバシーポリシー</a>
+                                <a href="kollect/terms.html">利用規約</a>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="app-name">お宝さんぽ</span>
+                            <span class="legal-links">
+                                <a href="otakara-sanpo/privacy-policy.html">プライバシーポリシー</a>
+                                <a href="otakara-sanpo/terms.html">利用規約</a>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="app-name">つぶやきメモ</span>
+                            <span class="legal-links">
+                                <a href="tsubuyaki-memo-lp/privacy-policy.html">プライバシーポリシー</a>
+                                <a href="tsubuyaki-memo-lp/terms.html">利用規約</a>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="app-name">水ノート</span>
+                            <span class="legal-links">
+                                <a href="water-note-lp/privacy-policy.html">プライバシーポリシー</a>
+                                <a href="water-note-lp/terms.html">利用規約</a>
+                            </span>
+                        </li>
                     </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section class="contact-section" id="contact">
-        <div class="container">
-            <div class="contact-content">
-                <h2 class="section-title">Let's Connect</h2>
-                <p class="section-subtitle">
-                    新しいアイデアや協業のご相談、お気軽にご連絡ください
-                </p>
-                
-                <div class="social-links">
-                    <a href="https://github.com/appstake35" class="social-link" target="_blank" title="GitHub">
-                        <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                        </svg>
-                    </a>
-                    <a href="mailto:appstake35@gmail.com" class="social-link" title="Email">
-                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                            <polyline points="22,6 12,13 2,6"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
+    <!-- 5. Footer -->
     <footer>
         <div class="container">
-            <p>&copy; 2025 Apps Take. All rights reserved.</p>
+            <div class="footer-inner">
+                <p class="footer-copy">&copy; 2026 AppsTake. All rights reserved.</p>
+                <a href="https://github.com/appstake35" class="footer-github" target="_blank" rel="noopener">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    GitHub
+                </a>
+            </div>
         </div>
     </footer>
 
     <script>
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Intersection Observer for scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
+        // スクロール出現（JS無効時はCSS側で常時表示なので、ここは飾り）
+        const io = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
+                    entry.target.classList.add('visible');
+                    io.unobserve(entry.target);
                 }
             });
-        }, observerOptions);
-
-        document.querySelectorAll('.app-card, .philosophy-card').forEach(el => {
-            observer.observe(el);
-        });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     </script>
 </body>
 </html>
