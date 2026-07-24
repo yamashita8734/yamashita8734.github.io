@@ -10,8 +10,9 @@
     <meta property="og:description" content="お気に入りのカードを厳選して、美しく飾る。プレミアムなデジタルカードバインダー。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://appstake35.github.io/kollect/">
+    <meta property="og:image" content="https://appstake35.github.io/assets/og/kollect.png">
     <link rel="canonical" href="https://appstake35.github.io/kollect/">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E📖%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" href="../assets/icons/kollect.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -248,15 +249,31 @@
 
         .binder-frame {
             width: 320px;
-            background: var(--bg-card);
-            border-radius: 20px;
-            border: 1px solid var(--border-card);
-            padding: 24px;
+            border-radius: 28px;
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
             box-shadow: 0 40px 100px rgba(0,0,0,0.5), 0 0 80px var(--gold-glow);
         }
 
+        .binder-frame img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        /* ヒーローの実アプリアイコン */
+        .hero-app-icon {
+            width: 88px;
+            height: 88px;
+            border-radius: 20px;
+            display: block;
+            margin: 0 auto 28px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 48px var(--gold-glow);
+        }
+
         /* JS有効時のみ: ヒーローの段階的導入とバインダーのゆったりした浮遊 */
-        html.js .hero-badge { animation: fadeInDown 0.8s ease both; }
+        html.js .hero-app-icon { animation: fadeInDown 0.8s ease both; }
+        html.js .hero-badge { animation: fadeInDown 0.8s ease 0.08s both; }
         html.js .hero-title { animation: fadeInUp 0.8s ease 0.15s both; }
         html.js .hero-subtitle-en { animation: fadeInUp 0.8s ease 0.25s both; }
         html.js .hero-description { animation: fadeInUp 0.8s ease 0.35s both; }
@@ -269,66 +286,6 @@
         @keyframes binderFloat {
             from { transform: translateY(0); }
             to   { transform: translateY(-10px); }
-        }
-
-        .binder-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .binder-header-title {
-            font-family: 'DM Serif Display', serif;
-            font-size: 16px;
-            color: var(--gold-light);
-        }
-
-        .binder-header-page {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-
-        .card-slot {
-            aspect-ratio: 5/7;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .card-slot.filled {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border: 1px solid rgba(200, 164, 78, 0.15);
-            animation: cardShimmer 3s ease infinite;
-        }
-
-        .card-slot.empty {
-            border: 1px dashed rgba(200, 164, 78, 0.1);
-            background: rgba(255,255,255,0.01);
-        }
-
-        .card-slot .card-inner {
-            position: absolute;
-            inset: 4px;
-            border-radius: 6px;
-            background: linear-gradient(135deg, 
-                rgba(200,164,78,0.1) 0%, 
-                rgba(200,164,78,0.02) 40%,
-                rgba(100,130,200,0.08) 100%
-            );
-        }
-
-        .card-slot .card-shine {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(125deg, transparent 30%, rgba(255,255,255,0.06) 50%, transparent 70%);
-            animation: shine 4s ease-in-out infinite;
         }
 
         /* ── Features Section ── */
@@ -606,16 +563,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes shine {
-            0%, 100% { transform: translateX(-100%); }
-            50% { transform: translateX(100%); }
-        }
-
-        @keyframes cardShimmer {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.85; }
-        }
-
         /* ── Scroll Reveal（JS有効時のみ隠す。無効時・クローラーには常に全文） ── */
         html.js .reveal {
             opacity: 0;
@@ -686,7 +633,6 @@
 
             .binder-frame {
                 width: 280px;
-                padding: 20px;
             }
 
             .features, .philosophy, .pricing {
@@ -713,7 +659,6 @@
 
             .binder-frame {
                 width: 260px;
-                padding: 16px;
             }
         }
     </style>
@@ -734,6 +679,7 @@
 <!-- Hero -->
 <section class="hero" id="hero">
     <div class="hero-content">
+        <img class="hero-app-icon" src="../assets/icons/kollect.png" alt="Kollect アプリアイコン" width="88" height="88">
         <div class="hero-badge">Digital Card Binder</div>
         <h1 class="hero-title">
             あなただけの<br><span class="gold">カードバインダー</span>
@@ -750,24 +696,10 @@
     </div>
 </section>
 
-<!-- Binder Mockup -->
+<!-- App Screenshot -->
 <section class="binder-showcase">
     <div class="binder-frame">
-        <div class="binder-header">
-            <span class="binder-header-title">My Collection</span>
-            <span class="binder-header-page">1 / 5</span>
-        </div>
-        <div class="card-grid">
-            <div class="card-slot filled"><div class="card-inner"></div><div class="card-shine"></div></div>
-            <div class="card-slot filled"><div class="card-inner"></div><div class="card-shine"></div></div>
-            <div class="card-slot filled"><div class="card-inner"></div><div class="card-shine"></div></div>
-            <div class="card-slot filled"><div class="card-inner"></div><div class="card-shine"></div></div>
-            <div class="card-slot filled"><div class="card-inner"></div><div class="card-shine"></div></div>
-            <div class="card-slot filled"><div class="card-inner"></div><div class="card-shine"></div></div>
-            <div class="card-slot filled"><div class="card-inner"></div><div class="card-shine"></div></div>
-            <div class="card-slot empty"></div>
-            <div class="card-slot empty"></div>
-        </div>
+        <img src="../assets/screenshots/kollect-hero.jpg" alt="Kollect のバインダー画面（9枚グリッドの推しコレクション）" width="720" height="1558" loading="lazy">
     </div>
 </section>
 
