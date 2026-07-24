@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>document.documentElement.classList.add('js');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Otakara Sanpo - Treasure-Hunt Walking</title>
@@ -9,8 +10,9 @@
     <meta property="og:description" content="A treasure map, every day you walk. Decode, walk, and collect treasures in your gallery.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://appstake35.github.io/otakara-sanpo/index-en.html">
+    <meta property="og:image" content="https://appstake35.github.io/assets/og/otakara-sanpo.png">
     <link rel="canonical" href="https://appstake35.github.io/otakara-sanpo/index-en.html">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🗺️%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" href="../assets/icons/otakara-sanpo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -39,37 +41,43 @@
         .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 400; letter-spacing: 0.5px; transition: color 0.3s ease; }
         .nav-links a:hover { color: var(--gold-light); }
         .nav-links .lang { border: 1px solid var(--border-subtle); border-radius: 100px; padding: 4px 14px; }
-        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; padding: 120px 40px 80px; overflow: hidden; }
+        .hero { display: flex; align-items: center; justify-content: center; position: relative; padding: 168px 40px 48px; overflow: hidden; }
         .hero::before { content: ''; position: absolute; top: -30%; left: 50%; transform: translateX(-50%); width: 800px; height: 800px; background: radial-gradient(ellipse, var(--gold-glow) 0%, transparent 70%); pointer-events: none; }
         .hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 200px; background: linear-gradient(to top, var(--bg-primary), transparent); pointer-events: none; }
         .hero-content { text-align: center; max-width: 720px; position: relative; z-index: 1; }
-        .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; border: 1px solid var(--border-subtle); border-radius: 100px; font-size: 13px; color: var(--gold-primary); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 40px; background: rgba(200, 164, 78, 0.04); animation: fadeInDown 0.8s ease both; }
-        .hero-title { font-family: 'DM Serif Display', serif; font-size: clamp(44px, 8vw, 84px); font-weight: 400; line-height: 1.08; letter-spacing: -1px; margin-bottom: 8px; animation: fadeInUp 0.8s ease 0.15s both; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; border: 1px solid var(--border-subtle); border-radius: 100px; font-size: 13px; color: var(--gold-primary); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 40px; background: rgba(200, 164, 78, 0.04); }
+        .hero-title { font-family: 'DM Serif Display', serif; font-size: clamp(44px, 8vw, 84px); font-weight: 400; line-height: 1.08; letter-spacing: -1px; margin-bottom: 8px; }
         .hero-title .gold { background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold-primary) 50%, var(--gold-dark) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .hero-subtitle-en { font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 300; color: var(--text-muted); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 32px; animation: fadeInUp 0.8s ease 0.25s both; }
-        .hero-description { font-size: 17px; font-weight: 300; line-height: 2; color: var(--text-secondary); margin-bottom: 48px; animation: fadeInUp 0.8s ease 0.35s both; }
-        .hero-cta { display: inline-flex; align-items: center; gap: 12px; padding: 16px 36px; background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark)); color: var(--bg-primary); text-decoration: none; border-radius: 12px; font-size: 15px; font-weight: 600; letter-spacing: 0.5px; transition: all 0.3s ease; animation: fadeInUp 0.8s ease 0.45s both; }
+        .hero-subtitle-en { font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 300; color: var(--text-muted); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 32px; }
+        .hero-description { font-size: 17px; font-weight: 300; line-height: 2; color: var(--text-secondary); margin-bottom: 48px; }
+        .hero-cta { display: inline-flex; align-items: center; gap: 12px; padding: 16px 36px; background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark)); color: var(--bg-primary); text-decoration: none; border-radius: 12px; font-size: 15px; font-weight: 600; letter-spacing: 0.5px; transition: transform 0.3s ease, box-shadow 0.3s ease; position: relative; overflow: hidden; }
         .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(200, 164, 78, 0.3); }
         .hero-cta svg { width: 20px; height: 20px; }
+        .hero-cta::after { content: ''; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.4) 50%, transparent 65%); transform: translateX(-120%); }
+        .hero-cta:hover::after { animation: ctaSweep 0.9s ease; }
+        @keyframes ctaSweep { to { transform: translateX(120%); } }
+        .hero-app-icon { width: 88px; height: 88px; border-radius: 20px; display: block; margin: 0 auto 28px; box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 48px var(--gold-glow); }
+        html.js .hero-app-icon { animation: fadeInDown 0.8s ease both; }
+        html.js .hero-badge { animation: fadeInDown 0.8s ease 0.08s both; }
+        html.js .hero-title { animation: fadeInUp 0.8s ease 0.15s both; }
+        html.js .hero-subtitle-en { animation: fadeInUp 0.8s ease 0.25s both; }
+        html.js .hero-description { animation: fadeInUp 0.8s ease 0.35s both; }
+        html.js .hero .hero-cta { animation: fadeInUp 0.8s ease 0.45s both; }
+        html.js .gallery-frame { animation: floatUp 1s ease 0.5s both, galleryFloat 7s ease-in-out 2.5s infinite alternate; }
+        @keyframes galleryFloat { from { transform: translateY(0); } to { transform: translateY(-10px); } }
         .gallery-showcase { padding: 40px 40px 100px; display: flex; justify-content: center; position: relative; }
-        .gallery-frame { width: 320px; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-card); padding: 24px; box-shadow: 0 40px 100px rgba(0,0,0,0.5), 0 0 80px var(--gold-glow); animation: floatUp 1s ease 0.5s both; }
-        .gallery-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-        .gallery-header-title { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--gold-light); }
-        .gallery-header-page { font-size: 12px; color: var(--text-muted); }
-        .slot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .slot { aspect-ratio: 1/1; border-radius: 10px; overflow: hidden; position: relative; }
-        .slot.filled { background: radial-gradient(circle at 50% 35%, #2a2438, #14101c); border: 1px solid rgba(200, 164, 78, 0.25); animation: cardShimmer 3s ease infinite; display: flex; align-items: center; justify-content: center; }
-        .slot.filled .gem { font-size: 26px; filter: drop-shadow(0 2px 8px rgba(200,164,78,0.4)); }
-        .slot.empty { border: 1px dashed rgba(200, 164, 78, 0.14); background: rgba(255,255,255,0.01); display: flex; align-items: center; justify-content: center; }
-        .slot.empty::after { content: '?'; color: rgba(200,164,78,0.18); font-size: 20px; font-weight: 700; }
-        .slot .card-shine { position: absolute; inset: 0; background: linear-gradient(125deg, transparent 30%, rgba(255,255,255,0.07) 50%, transparent 70%); animation: shine 4s ease-in-out infinite; }
+        .gallery-frame { width: 320px; border-radius: 28px; border: 1px solid var(--border-subtle); overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.5), 0 0 80px var(--gold-glow); }
+        .gallery-frame img { display: block; width: 100%; height: auto; }
         .features { padding: 100px 40px; max-width: 1080px; margin: 0 auto; }
         .section-label { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-primary); margin-bottom: 16px; }
         .section-title { font-family: 'DM Serif Display', serif; font-size: clamp(30px, 5vw, 46px); font-weight: 400; line-height: 1.25; margin-bottom: 60px; }
         .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
-        .feature-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 16px; padding: 36px 32px; transition: all 0.4s ease; }
+        .feature-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 16px; padding: 36px 32px; transition: all 0.4s ease; position: relative; overflow: hidden; }
+        .feature-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--gold-primary), transparent); transform: scaleX(0); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+        .feature-card:hover::before { transform: scaleX(1); }
         .feature-card:hover { border-color: var(--border-subtle); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-        .feature-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px; background: rgba(200, 164, 78, 0.08); border: 1px solid rgba(200, 164, 78, 0.12); }
+        .feature-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px; background: rgba(200, 164, 78, 0.08); border: 1px solid rgba(200, 164, 78, 0.12); transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+        .feature-card:hover .feature-icon { transform: translateY(-4px) rotate(-4deg); }
         .feature-card h3 { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 12px; }
         .feature-card p { font-size: 14px; line-height: 1.8; color: var(--text-secondary); font-weight: 300; }
         .philosophy { padding: 100px 40px; max-width: 800px; margin: 0 auto; text-align: center; position: relative; }
@@ -99,18 +107,29 @@
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes floatUp { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes shine { 0%, 100% { transform: translateX(-100%); } 50% { transform: translateX(100%); } }
-        @keyframes cardShimmer { 0%, 100% { opacity: 1; } 50% { opacity: 0.85; } }
-        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-        .reveal.visible { opacity: 1; transform: translateY(0); }
+        html.js .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        html.js .reveal.visible { opacity: 1; transform: translateY(0); }
+        html.js .features.visible .feature-card { animation: cardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+        html.js .features.visible .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        html.js .features.visible .feature-card:nth-child(2) { animation-delay: 0.18s; }
+        html.js .features.visible .feature-card:nth-child(3) { animation-delay: 0.26s; }
+        html.js .features.visible .feature-card:nth-child(4) { animation-delay: 0.34s; }
+        html.js .features.visible .feature-card:nth-child(5) { animation-delay: 0.42s; }
+        html.js .features.visible .feature-card:nth-child(6) { animation-delay: 0.5s; }
+        @keyframes cardIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+            html { scroll-behavior: auto; }
+            html.js .reveal { opacity: 1; transform: none; }
+        }
         @media (max-width: 768px) {
             nav { padding: 16px 20px; } .nav-links { gap: 18px; } .nav-links a { font-size: 13px; }
-            .hero { padding: 100px 24px 60px; } .hero-description { font-size: 15px; }
-            .gallery-showcase { padding: 20px 24px 80px; } .gallery-frame { width: 300px; padding: 20px; }
+            .hero { padding: 132px 24px 40px; } .hero-title { font-size: clamp(34px, 10vw, 44px); } .hero-description { font-size: 15px; }
+            .gallery-showcase { padding: 20px 24px 80px; } .gallery-frame { width: 300px; }
             .features, .philosophy, .pricing { padding: 80px 24px; } .features-grid { grid-template-columns: 1fr; }
             footer { padding: 40px 24px; } .footer-links { gap: 20px; }
         }
-        @media (max-width: 480px) { .nav-links { gap: 14px; } .gallery-frame { width: 270px; padding: 16px; } }
+        @media (max-width: 480px) { .nav-links { gap: 14px; } .gallery-frame { width: 270px; } }
     </style>
 </head>
 <body>
@@ -121,12 +140,14 @@
         <li><a href="#features">Features</a></li>
         <li><a href="#pricing">Pricing</a></li>
         <li><a href="#download">Download</a></li>
+        <li><a href="../">AppsTake</a></li>
         <li><a href="index.html" class="lang">日本語</a></li>
     </ul>
 </nav>
 
 <section class="hero" id="hero">
     <div class="hero-content">
+        <img class="hero-app-icon" src="../assets/icons/otakara-sanpo.png" alt="Otakara Sanpo app icon" width="88" height="88">
         <div class="hero-badge">Treasure-Hunt Walking</div>
         <h1 class="hero-title">
             A <span class="gold">treasure map</span>,<br>every day you walk.
@@ -146,21 +167,7 @@
 
 <section class="gallery-showcase">
     <div class="gallery-frame">
-        <div class="gallery-header">
-            <span class="gallery-header-title">Treasure Gallery</span>
-            <span class="gallery-header-page">12 / 30</span>
-        </div>
-        <div class="slot-grid">
-            <div class="slot filled"><span class="gem">💎</span><div class="card-shine"></div></div>
-            <div class="slot filled"><span class="gem">🏺</span><div class="card-shine"></div></div>
-            <div class="slot filled"><span class="gem">👑</span><div class="card-shine"></div></div>
-            <div class="slot filled"><span class="gem">💍</span><div class="card-shine"></div></div>
-            <div class="slot filled"><span class="gem">🔱</span><div class="card-shine"></div></div>
-            <div class="slot filled"><span class="gem">🪙</span><div class="card-shine"></div></div>
-            <div class="slot filled"><span class="gem">⚱️</span><div class="card-shine"></div></div>
-            <div class="slot empty"></div>
-            <div class="slot empty"></div>
-        </div>
+        <img src="../assets/screenshots/otakara-sanpo-hero.jpg" alt="Otakara Sanpo home screen with today's map and treasure gallery" width="720" height="1558" loading="lazy">
     </div>
 </section>
 
