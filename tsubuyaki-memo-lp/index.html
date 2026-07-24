@@ -82,6 +82,8 @@
       color: var(--color-text);
       font-weight: 700;
       font-size: 15px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .nav-logo-icon {
@@ -608,6 +610,10 @@
       .feature-card {
         padding: 24px 22px;
       }
+    }
+
+    @media (max-width: 560px) {
+      .nav-links li:not(:last-child) { display: none; }
     }
 
     @media (max-width: 480px) {

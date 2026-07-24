@@ -116,6 +116,8 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .nav-logo .logo-icon {
@@ -735,6 +737,10 @@
         width: 220px;
         height: 440px;
       }
+    }
+
+    @media (max-width: 560px) {
+      .nav-links li:not(:last-child) { display: none; }
     }
 
     @media (max-width: 480px) {

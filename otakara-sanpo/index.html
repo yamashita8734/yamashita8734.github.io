@@ -245,6 +245,9 @@
             footer { padding: 40px 24px; }
             .footer-links { gap: 20px; }
         }
+        @media (max-width: 560px) {
+            .nav-links li:not(:nth-last-child(-n+2)) { display: none; }
+        }
         @media (max-width: 480px) {
             .nav-links { gap: 14px; }
             .gallery-frame { width: 270px; }
